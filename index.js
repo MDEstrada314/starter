@@ -1,7 +1,10 @@
 
 const fs = require('fs')
+const http = require('http')
+const url = require('url')
 
-const textInt = fs.readFileSync('./txt/input.txt','utf-8')
+
+/* const textInt = fs.readFileSync('./txt/input.txt','utf-8')
 
 
 const textOut = `esto es lo que sabemos de los aguacates: ${textInt}.\nCreted on ${Date.now()}`
@@ -29,3 +32,13 @@ fs.readFile('./txt/start.txt','utf-8', (err,data1)=>{
 })
 
 console.log('pailas');
+ */
+
+const server = http.createServer((req,res)=>{
+    console.log(req.url);
+    res.end('hola soy el servidor')
+})
+
+server.listen(65535,'127.0.0.1',()=>{
+    console.log("bueno si funciono");
+})
