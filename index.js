@@ -3,6 +3,9 @@ const fs = require('fs')
 const http = require('http')
 const url = require('url')
 
+const data = fs.readFileSync('./dev-data/data.json','utf-8')
+const dataJson = JSON.parse(data)
+
 
 /* const textInt = fs.readFileSync('./txt/input.txt','utf-8')
 
@@ -41,6 +44,9 @@ const server = http.createServer((req,res)=>{
     }else if (pahtNombre ==='/producto'){
         
         res.end('joel a la venta uwu');
+    }else if(pahtNombre === '/api'){
+            res.writeHead(200,{'ContenType':'application/json'})
+            res.end(data)
     }else{
         res.writeHead(404,{
             'Content-Type':'text/html',
