@@ -35,10 +35,22 @@ console.log('pailas');
  */
 
 const server = http.createServer((req,res)=>{
-    console.log(req.url);
-    res.end('hola soy el servidor')
+    const pahtNombre = req.url
+    if(pahtNombre === '/' || pahtNombre === '/joel'){
+        res.end('segun joel se le pude cambiar el name');
+    }else if (pahtNombre ==='/producto'){
+        
+        res.end('joel a la venta uwu');
+    }else{
+        res.writeHead(404,{
+            'Content-Type':'text/html',
+            'el-programador-dice':'pailas se cayo esa cosa'
+
+        })
+        res.end('<h1>la pagina no fuchion</h1>')
+    }
 })
 
-server.listen(65535,'127.0.0.1',()=>{
+server.listen(8000,'127.0.0.1',()=>{
     console.log("bueno si funciono");
 })
