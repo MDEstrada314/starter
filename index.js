@@ -1,14 +1,31 @@
+const fs = require('fs');
+const http = require('http');
+const url = require('url');
 
-const fs = require('fs')
-const http = require('http')
-const url = require('url')
+const remplaceTemplete = (temp, product) => {
+  let output = temp.replace(/{%PRODUCTONAME%}/g, product.productName);
+  output = output.replace(/{%IMAGEN%}/g, product.image);
+  output = output.replace(/{%PRICE%}/g, product.price);
+  output = output.replace(/{%NUTRIENT%}/g, product.nutrients);
+  output = output.replace(/{%COUNTRY%}/g, product.from);
+  output = output.replace(/{%QUANTY%} /g, product.quantity);
+  output = output.replace(/{%DESCRIPTION%}/g, product.description);
+  output = output.replace(/{%ID%}/g, product.id);
 
-const data = fs.readFileSync('./dev-data/data.json','utf-8')
-const dataJson = JSON.parse(data)
+  if (!product.organic) {
+    output = output.replace(/{%NOTORGANIC%}/g, 'not-organic ');
+  }
+  return output;
+};
 
+const overview = fs.readFileSync('./templates/overview.html', 'utf-8');
+const cards = fs.readFileSync('./templates/cards.html', 'utf-8');
+const producto = fs.readFileSync('./templates/product.html', 'utf-8');
+
+const data = fs.readFileSync('./dev-data/data.json', 'utf-8');
+const dataJson = JSON.parse(data);
 
 /* const textInt = fs.readFileSync('./txt/input.txt','utf-8')
-
 
 const textOut = `esto es lo que sabemos de los aguacates: ${textInt}.\nCreted on ${Date.now()}`
 fs.writeFileSync('./txt/output.txt', textOut)
@@ -17,8 +34,6 @@ fs.writeFileSync('./txt/output.txt', textOut)
 const textInt2 = fs.readFileSync('./txt/output.txt','utf-8')
 console.log(textInt2);
 console.log('File written');
-
-
 
 
 fs.readFile('./txt/start.txt','utf-8', (err,data1)=>{
@@ -37,26 +52,29 @@ fs.readFile('./txt/start.txt','utf-8', (err,data1)=>{
 console.log('pailas');
  */
 
-const server = http.createServer((req,res)=>{
-    const pahtNombre = req.url
-    if(pahtNombre === '/' || pahtNombre === '/joel'){
-        res.end('segun joel se le pude cambiar el name');
-    }else if (pahtNombre ==='/producto'){
-        
-        res.end('joel a la venta uwu');
-    }else if(pahtNombre === '/api'){
-            res.writeHead(200,{'ContenType':'application/json'})
-            res.end(data)
-    }else{
-        res.writeHead(404,{
-            'Content-Type':'text/html',
-            'el-programador-dice':'pailas se cayo esa cosa'
+const server = http.createServer((req, res) => {
+  const pahtNombre = req.url;
+  if (pahtNombre === '/' || pahtNombre === '/overview') {
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    const cardsHTML = dataJson.map( el => remplaceTemplete(cards, el)).join('');
+    console.log(cardsHTML);
+    const overviewCards = overview.replace('{%CARDS%}',cardsHTML)
+    res.end(overviewCards);
 
-        })
-        res.end('<h1>la pagina no fuchion</h1>')
-    }
-})
+  } else if (pahtNombre === '/producto') {
+    res.end('joel a la venta uwu');
+  } else if (pahtNombre === '/api') {
+    res.writeHead(200, { ContenType: 'application/json' });
+    res.end(data);
+  } else {
+    res.writeHead(404, {
+      'Content-Type': 'text/html',
+      'el-programador-dice': 'pailas se cayo esa cosa',
+    });
+    res.end('<h1>la pagina no fuchion</h1>');
+  }
+});
 
-server.listen(8000,'127.0.0.1',()=>{
-    console.log("bueno si funciono");
-})
+server.listen(8000, '127.0.0.1', () => {
+  console.log('bueno si funciono');
+});
