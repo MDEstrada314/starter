@@ -8,7 +8,7 @@ const remplaceTemplete = (temp, product) => {
   output = output.replace(/{%PRICE%}/g, product.price);
   output = output.replace(/{%NUTRIENT%}/g, product.nutrients);
   output = output.replace(/{%COUNTRY%}/g, product.from);
-  output = output.replace(/{%QUANTY%} /g, product.quantity);
+  output = output.replace(/{%QUANTY%}/g, product.quantity);
   output = output.replace(/{%DESCRIPTION%}/g, product.description);
   output = output.replace(/{%ID%}/g, product.id);
 
@@ -53,17 +53,26 @@ console.log('pailas');
  */
 
 const server = http.createServer((req, res) => {
-  const pahtNombre = req.url;
-  if (pahtNombre === '/' || pahtNombre === '/overview') {
+  
+
+  const {pathname,query} = url.parse(req.url, true)
+
+
+  if (pathname === '/' || pathname === '/overview') {
     res.writeHead(200, { 'Content-Type': 'text/html' });
     const cardsHTML = dataJson.map( el => remplaceTemplete(cards, el)).join('');
-    console.log(cardsHTML);
+   /*  console.log(cardsHTML); */
     const overviewCards = overview.replace('{%CARDS%}',cardsHTML)
     res.end(overviewCards);
 
-  } else if (pahtNombre === '/producto') {
-    res.end('joel a la venta uwu');
-  } else if (pahtNombre === '/api') {
+  } else if (pathname === '/producto') {
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+
+    const product = dataJson[query.id]
+    const output = remplaceTemplete (producto,product)
+    res.end(output);
+
+  } else if (pathname === '/api') {
     res.writeHead(200, { ContenType: 'application/json' });
     res.end(data);
   } else {
