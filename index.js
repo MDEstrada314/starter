@@ -1,22 +1,9 @@
 const fs = require('fs');
 const http = require('http');
 const url = require('url');
+const remplaceTemplete = require('./modules/remplaceTemplete.js');
 
-const remplaceTemplete = (temp, product) => {
-  let output = temp.replace(/{%PRODUCTONAME%}/g, product.productName);
-  output = output.replace(/{%IMAGEN%}/g, product.image);
-  output = output.replace(/{%PRICE%}/g, product.price);
-  output = output.replace(/{%NUTRIENT%}/g, product.nutrients);
-  output = output.replace(/{%COUNTRY%}/g, product.from);
-  output = output.replace(/{%QUANTY%}/g, product.quantity);
-  output = output.replace(/{%DESCRIPTION%}/g, product.description);
-  output = output.replace(/{%ID%}/g, product.id);
 
-  if (!product.organic) {
-    output = output.replace(/{%NOTORGANIC%}/g, 'not-organic ');
-  }
-  return output;
-};
 
 const overview = fs.readFileSync('./templates/overview.html', 'utf-8');
 const cards = fs.readFileSync('./templates/cards.html', 'utf-8');
